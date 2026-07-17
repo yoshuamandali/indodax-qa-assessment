@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+reports/
+output.xml
+log.html
+report.html
+.playwright/
