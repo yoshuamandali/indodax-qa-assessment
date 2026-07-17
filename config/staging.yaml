@@ -1,0 +1,11 @@
+base_url: "https://indodax.com"
+
+api:
+  base_url: "https://indodax.com/api"
+
+browser:
+  type: chromium
+  headless: true
+
+mobile:
+  platform: android
