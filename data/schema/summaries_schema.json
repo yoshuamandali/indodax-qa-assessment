@@ -1,0 +1,36 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "required": ["tickers", "prices_24h", "prices_7d"],
+    "additionalProperties": true,
+    "properties": {
+        "tickers": {
+            "type": "object",
+            "minProperties": 1,
+            "additionalProperties": {
+                "type": "object",
+                "required": ["buy", "high", "last", "low", "name", "sell", "server_time"],
+                "properties": {
+                    "buy":         { "type": "string" },
+                    "high":        { "type": "string" },
+                    "last":        { "type": "string" },
+                    "low":         { "type": "string" },
+                    "name":        { "type": "string" },
+                    "sell":        { "type": "string" },
+                    "server_time": { "type": "integer", "minimum": 1 }
+                },
+                "additionalProperties": true
+            }
+        },
+        "prices_24h": {
+            "type": "object",
+            "minProperties": 1,
+            "additionalProperties": { "type": "string" }
+        },
+        "prices_7d": {
+            "type": "object",
+            "minProperties": 1,
+            "additionalProperties": { "type": "string" }
+        }
+    }
+}

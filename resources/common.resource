@@ -1,6 +1,4 @@
 *** Settings ***
-Library    OperatingSystem
 Library    Collections
+Library    OperatingSystem
 Library    String
-
-Resource    ../keywords/common_keywords.resource

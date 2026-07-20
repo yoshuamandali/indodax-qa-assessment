@@ -1,11 +1,11 @@
 *** Settings ***
 Library    RequestsLibrary
-
-*** Variables ***
-${BASE_URL}    https://indodax.com/api
+Variables    ../config/config.py
 
 *** Keywords ***
 Create API Session
     Create Session
     ...    indodax
     ...    ${BASE_URL}
+    ...    verify=${False}
+    ...    timeout=${API_TIMEOUT}

@@ -10,3 +10,14 @@ CONFIG_PATH = os.path.join(
 
 with open(CONFIG_PATH, "r") as file:
     CONFIG = yaml.safe_load(file)
+
+# ========= API =========
+BASE_URL = CONFIG["api"]["base_url"]
+API_TIMEOUT = CONFIG["api"].get("timeout", 30)
+
+# ========= Browser =========
+BROWSER = CONFIG["browser"]["type"]
+HEADLESS = CONFIG["browser"]["headless"]
+
+# ========= Mobile =========
+PLATFORM = CONFIG["mobile"]["platform"]

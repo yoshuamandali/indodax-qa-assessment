@@ -1,0 +1,120 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://example.com/indodax-pairs.schema.json",
+    "title": "Indodax Trading Pairs",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+            "id",
+            "symbol",
+            "base_currency",
+            "traded_currency",
+            "traded_currency_unit",
+            "description",
+            "ticker_id",
+            "volume_precision",
+            "price_precision",
+            "price_round",
+            "pricescale",
+            "trade_min_base_currency",
+            "trade_min_traded_currency",
+            "has_memo",
+            "memo_name",
+            "url_logo",
+            "url_logo_png"
+        ],
+        "properties": {
+            "id": {
+                "type": "string",
+                "description": "Trading pair identifier.",
+                "examples": [
+                    "btcidr"
+                ]
+            },
+            "symbol": {
+                "type": "string",
+                "description": "Trading symbol.",
+                "examples": [
+                    "BTCIDR"
+                ]
+            },
+            "base_currency": {
+                "type": "string",
+                "description": "Quote/base currency.",
+                "examples": [
+                    "idr"
+                ]
+            },
+            "traded_currency": {
+                "type": "string",
+                "description": "Asset being traded.",
+                "examples": [
+                    "btc"
+                ]
+            },
+            "traded_currency_unit": {
+                "type": "string",
+                "description": "Display unit.",
+                "examples": [
+                    "BTC"
+                ]
+            },
+            "description": {
+                "type": "string",
+                "examples": [
+                    "BTC/IDR"
+                ]
+            },
+            "ticker_id": {
+                "type": "string",
+                "examples": [
+                    "btc_idr"
+                ]
+            },
+            "volume_precision": {
+                "type": "number"
+            },
+            "price_precision": {
+                "type": "number"
+            },
+            "price_round": {
+                "type": "number"
+            },
+            "pricescale": {
+                "type": "number"
+            },
+            "trade_min_base_currency": {
+                "type": "number"
+            },
+            "trade_min_traded_currency": {
+                "type": "number"
+            },
+            "has_memo": {
+                "type": "boolean"
+            },
+            "memo_name": {
+                "oneOf": [
+                    {
+                        "type": "boolean"
+                    },
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "url_logo": {
+                "type": "string",
+                "format": "uri"
+            },
+            "url_logo_png": {
+                "type": "string",
+                "format": "uri"
+            }
+        }
+    }
+}

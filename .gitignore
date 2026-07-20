@@ -1,7 +1,20 @@
+# Python
 .venv/
 __pycache__/
-reports/
+*.pyc
+
+# Robot Framework
 output.xml
 log.html
 report.html
-.playwright/
+test.xml
+
+# Generated reports
+reports/
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/

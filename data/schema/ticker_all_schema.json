@@ -1,0 +1,25 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "required": ["tickers"],
+    "additionalProperties": true,
+    "properties": {
+        "tickers": {
+            "type": "object",
+            "minProperties": 1,
+            "additionalProperties": {
+                "type": "object",
+                "required": ["buy", "high", "last", "low", "sell", "server_time"],
+                "properties": {
+                    "buy":         { "type": "string" },
+                    "high":        { "type": "string" },
+                    "last":        { "type": "string" },
+                    "low":         { "type": "string" },
+                    "sell":        { "type": "string" },
+                    "server_time": { "type": "integer", "minimum": 1 }
+                },
+                "additionalProperties": true
+            }
+        }
+    }
+}

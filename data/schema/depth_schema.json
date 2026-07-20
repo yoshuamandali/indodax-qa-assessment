@@ -1,0 +1,26 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "required": ["buy", "sell"],
+    "additionalProperties": true,
+    "properties": {
+        "buy": {
+            "type": "array",
+            "items": {
+                "type": "array",
+                "items": { "type": "string" },
+                "minItems": 2,
+                "maxItems": 2
+            }
+        },
+        "sell": {
+            "type": "array",
+            "items": {
+                "type": "array",
+                "items": { "type": "string" },
+                "minItems": 2,
+                "maxItems": 2
+            }
+        }
+    }
+}

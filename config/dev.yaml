@@ -2,6 +2,7 @@ base_url: "https://indodax.com"
 
 api:
   base_url: "https://indodax.com/api"
+  timeout: 30
 
 browser:
   type: chromium

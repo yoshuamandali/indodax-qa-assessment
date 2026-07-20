@@ -1,0 +1,21 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "required": ["ticker"],
+    "additionalProperties": true,
+    "properties": {
+        "ticker": {
+            "type": "object",
+            "required": ["buy", "high", "last", "low", "sell", "server_time"],
+            "properties": {
+                "buy":         { "type": "string" },
+                "high":        { "type": "string" },
+                "last":        { "type": "string" },
+                "low":         { "type": "string" },
+                "sell":        { "type": "string" },
+                "server_time": { "type": "integer", "minimum": 1 }
+            },
+            "additionalProperties": true
+        }
+    }
+}
