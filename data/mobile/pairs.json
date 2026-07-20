@@ -1,0 +1,8 @@
+{
+  "pairs": [
+    {"symbol": "USDTIDR", "display": "USDT/IDR", "category": "stablecoin"},
+    {"symbol": "BTCIDR",  "display": "BTC/IDR",  "category": "coin"},
+    {"symbol": "ETHIDR",  "display": "ETH/IDR",  "category": "coin"},
+    {"symbol": "INVALID", "display": "ZZZ/IDR",  "category": "negative"}
+  ]
+}

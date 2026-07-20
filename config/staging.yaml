@@ -2,10 +2,22 @@ base_url: "https://indodax.com"
 
 api:
   base_url: "https://indodax.com/api"
+  timeout: 30
 
 browser:
   type: chromium
   headless: true
+  url: "https://indodax.com/market/USDTIDR"
+  timeout: 30
 
 mobile:
   platform: android
+  android:
+    platform_name: Android
+    automation_name: UiAutomator2
+    app: ${APP_APK_PATH}
+    app_package: com.indodax.android
+    app_activity: com.indodax.android.MainActivity
+    device_name: Pixel-6
+    no_reset: true
+    new_command_timeout: 300

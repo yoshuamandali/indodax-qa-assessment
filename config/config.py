@@ -18,6 +18,9 @@ API_TIMEOUT = CONFIG["api"].get("timeout", 30)
 # ========= Browser =========
 BROWSER = CONFIG["browser"]["type"]
 HEADLESS = CONFIG["browser"]["headless"]
+BROWSER_URL = CONFIG["browser"]["url"]
+BROWSER_TIMEOUT = CONFIG["browser"].get("timeout", 30)
 
 # ========= Mobile =========
 PLATFORM = CONFIG["mobile"]["platform"]
+MOBILE_CAPABILITIES = CONFIG["mobile"][PLATFORM]
