@@ -1,4 +1,53 @@
-Run Command Cheat Sheet
+# Indodax QA Assessment
+
+Robot Framework + Locust test suite covering API, web, mobile, and load testing.
+
+## How to Run
+
+### Prerequisites
+
+- Python 3.10+
+- Virtualenv (recommended)
+
+### Setup
+
+```bash
+# Clone
+git clone <repo-url>
+cd indodax-qa-assessment
+
+# Create + activate venv
+python -m venv .venv
+source .venv/bin/activate        # macOS/Linux
+# .venv\Scripts\activate         # Windows
+
+# Install deps
+pip install -r requirements.txt
+```
+
+### Run Tests
+
+```bash
+# API smoke (dev)
+ENV=dev robot --include smoke tests/api/
+
+# API regression (staging)
+ENV=staging robot --include regression tests/api/
+
+# Parallel API regression
+ENV=staging pabot --processes 4 --include regression tests/api/
+
+# Load test (Locust) — see "Load Testing" section below
+python3 -m load.runner.app        # Flask UI
+# or
+locust -f load/getAllEmployee.py --headless -u 10 -r 2 --run-time 150s
+```
+
+### Configuration
+
+Env selected via `ENV` var (`dev` | `staging` | `prod`). Values in `config/{env}.yaml`.
+
+## Run Command Cheat Sheet
 ```bash
 # Dev smoke
 ENV=dev robot --include smoke tests/api/
@@ -48,3 +97,47 @@ Layer-to-File Cross-Reference
 | Data | `data/schema/*.json` | 8 JSON Schemas |
 | Tests | `tests/api/smoke/*.robot` | Happy path |
 | Tests | `tests/api/regression/*.robot` | Negative + edge |
+
+## Load Testing
+
+### Run via Flask UI (recommended for interactive runs)
+
+```bash
+python3 -m load.runner.app
+# Open http://127.0.0.1:5001  (port 5000 is used by macOS AirPlay)
+# Pick script + set Target RPS + Users -> Run
+# Endpoints table populates live; click a past report row to view rendered markdown
+```
+
+### Run via CLI (headless)
+
+```bash
+# Full 10-user run with ramp + hold (150s total)
+locust -f load/getAllEmployee.py --headless -u 10 -r 2 --run-time 150s
+
+# Smoke run with 2 users for 10s
+locust -f load/getEmployeeById.py --headless -u 2 -r 1 --run-time 10s
+
+# With CSV output
+locust -f load/getAllEmployee.py --headless -u 10 -r 2 --run-time 150s \
+       --csv load/reports/load_$(date +%Y%m%d_%H%M%S)
+```
+
+### Pass/Fail Criteria (in `load/config/thresholds.py`)
+
+| Assertion | Target |
+|---|---|
+| Achieved RPS | >= 90% of TARGET_RPS |
+| p95 latency | <= 2000 ms |
+| Error rate | <= 5% |
+
+### Reports
+
+Written to `load/reports/`:
+- `load_<timestamp>.json` — full per-request samples + summary stats
+- `load_<timestamp>.csv` — per-sample CSV
+- `load_<timestamp>.md` — short written interpretation with verdict
+
+### Exit Code
+
+Exit code `0` = all assertions passed. `1` = at least one assertion failed (CI-friendly).

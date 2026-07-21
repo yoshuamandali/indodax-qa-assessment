@@ -18,3 +18,7 @@ reports/
 # IDE
 .vscode/
 .idea/
+
+# Load test reports (keep dir, ignore outputs)
+load/reports/*
+!load/reports/.gitkeep

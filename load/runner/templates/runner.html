@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Locust Runner</title>
+  <style>
+    body { font-family: -apple-system, system-ui, sans-serif; margin: 24px; max-width: 960px; }
+    h1 { margin-top: 0; }
+    .form-row { margin: 8px 0; }
+    label { display: inline-block; width: 120px; }
+    input[type="number"], select { padding: 4px 8px; }
+    button { padding: 6px 14px; margin-right: 8px; cursor: pointer; }
+    #status { margin-top: 24px; padding: 12px; background: #f4f4f4; border-radius: 4px; font-family: monospace; white-space: pre-wrap; min-height: 200px; }
+    #stdout { margin-top: 16px; padding: 12px; background: #222; color: #ddd; font-family: monospace; font-size: 12px; white-space: pre-wrap; max-height: 400px; overflow-y: auto; }
+    .state-passed { color: #0a0; font-weight: bold; }
+    .state-failed { color: #c00; font-weight: bold; }
+    .state-running { color: #06c; font-weight: bold; }
+    .state-stopped { color: #c80; font-weight: bold; }
+    table { border-collapse: collapse; margin-top: 12px; width: 100%; }
+    th, td { border: 1px solid #ccc; padding: 4px 8px; text-align: left; font-size: 12px; }
+    th { background: #eee; }
+  </style>
+</head>
+<body>
+  <h1>Locust Load Test Runner</h1>
+
+  <div class="form-row">
+    <label for="script">Script:</label>
+    <select id="script"></select>
+  </div>
+  <div class="form-row">
+    <label for="rps">Target RPS:</label>
+    <input type="number" id="rps" value="10" min="1" max="100">
+  </div>
+  <div class="form-row">
+    <label for="users">Users:</label>
+    <input type="number" id="users" value="10" min="1" max="500">
+  </div>
+  <div class="form-row">
+    <button id="run-btn" onclick="runLocust()">Run</button>
+    <button id="stop-btn" onclick="stopLocust()" disabled>Stop</button>
+  </div>
+
+  <div id="status">No run yet.</div>
+
+  <h2>Endpoints</h2>
+  <table id="endpoints-table">
+    <thead><tr><th>Method</th><th>Endpoint</th><th>Count</th><th>Fails</th><th>Fail %</th></tr></thead>
+    <tbody><tr><td colspan="5">No data yet.</td></tr></tbody>
+  </table>
+
+  <div id="stdout"></div>
+
+  <h2>Past Reports</h2>
+  <table id="reports-table">
+    <thead><tr><th>File</th><th>Size</th><th>Modified</th></tr></thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    let currentRunId = null;
+    let pollTimer = null;
+
+    async function loadScripts() {
+      const res = await fetch('/api/scripts');
+      const data = await res.json();
+      const sel = document.getElementById('script');
+      sel.innerHTML = '';
+      data.scripts.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s; opt.textContent = s;
+        sel.appendChild(opt);
+      });
+    }
+
+    async function runLocust() {
+      const script = document.getElementById('script').value;
+      const rps = document.getElementById('rps').value;
+      const users = document.getElementById('users').value;
+      const res = await fetch('/api/run', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({script, rps: parseInt(rps, 10), users: parseInt(users, 10)})
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        document.getElementById('status').textContent = 'Error: ' + (data.error || res.status);
+        return;
+      }
+      currentRunId = data.run_id;
+      document.getElementById('run-btn').disabled = true;
+      document.getElementById('stop-btn').disabled = false;
+      startPolling();
+    }
+
+    async function stopLocust() {
+      if (!currentRunId) return;
+      await fetch('/api/stop/' + currentRunId, {method: 'POST'});
+      stopPolling();
+    }
+
+    function startPolling() {
+      if (pollTimer) return;
+      pollTimer = setInterval(pollStatus, 2000);
+      pollStatus();
+    }
+
+    function stopPolling() {
+      if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+      document.getElementById('run-btn').disabled = false;
+      document.getElementById('stop-btn').disabled = true;
+      loadReports();
+    }
+
+    async function pollStatus() {
+      if (!currentRunId) return;
+      const res = await fetch('/api/status/' + currentRunId);
+      const data = await res.json();
+      if (!res.ok) {
+        document.getElementById('status').textContent = 'Error: ' + (data.error || res.status);
+        return;
+      }
+      const stateClass = 'state-' + data.state;
+      const status = [
+        'Run ID:    ' + data.run_id,
+        'State:     <span class="' + stateClass + '">' + data.state.toUpperCase() + '</span>',
+        'PID:       ' + data.pid,
+        'Script:    ' + data.script,
+        'Target RPS:' + data.rps,
+        'Users:     ' + data.users,
+        'Duration:  ' + data.duration_s + 's / ' + data.duration_target_s + 's',
+        'RPS now:   ' + (data.current_rps !== null ? data.current_rps : '-'),
+        'Errors:    ' + (data.current_errors_pct !== null ? data.current_errors_pct + '%' : '-') + ' (current)',
+        'Exit code: ' + (data.exit_code !== null ? data.exit_code : '-'),
+      ].join('\n');
+      document.getElementById('status').innerHTML = status;
+      document.getElementById('stdout').textContent = data.stdout_tail;
+      renderEndpoints(data.endpoints || []);
+      if (data.state !== 'running') {
+        stopPolling();
+      }
+    }
+
+    async function loadReports() {
+      const res = await fetch('/api/reports');
+      const data = await res.json();
+      const tbody = document.querySelector('#reports-table tbody');
+      tbody.innerHTML = '';
+      data.reports.forEach(r => {
+        const tr = document.createElement('tr');
+        tr.style.cursor = 'pointer';
+        tr.innerHTML = '<td>' + r.file + '</td><td>' + r.size_bytes + '</td><td>' + r.modified + '</td>';
+        tr.onclick = () => window.open('/api/reports/' + encodeURIComponent(r.file), '_blank');
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderEndpoints(endpoints) {
+      const tbody = document.querySelector('#endpoints-table tbody');
+      if (!endpoints.length) {
+        tbody.innerHTML = '<tr><td colspan="5">No data yet.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = '';
+      endpoints.forEach(e => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = '<td>' + e.method + '</td><td>' + e.name + '</td><td>' + e.count + '</td><td>' + e.fail_count + '</td><td>' + e.fail_pct + '</td>';
+        tbody.appendChild(tr);
+      });
+    }
+
+    loadScripts();
+    loadReports();
+  </script>
+</body>
+</html>
