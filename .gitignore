@@ -22,3 +22,7 @@ reports/
 # Load test reports (keep dir, ignore outputs)
 load/reports/*
 !load/reports/.gitkeep
+
+# APKs (binaries, not committed)
+apps/*
+!apps/.gitkeep

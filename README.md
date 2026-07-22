@@ -67,8 +67,15 @@ ENV=staging robot --include ticker tests/api/
 # Exclude non-critical
 ENV=staging robot --exclude non-critical tests/
 
-# Mobile Android smoke
-ENV=staging robot --include androidANDsmoke --variable REMOTE_URL:http://hub:4723 tests/mobile/
+# Mobile Android smoke (local)
+# 1. Start Appium server (separate terminal)
+appium --port 4723
+
+# 2. Verify device connected
+adb devices
+
+# 3. Run suite
+ENV=dev robot --include smoke tests/mobile/android/smoke/
 
 # Generate report to custom dir
 ENV=staging robot --outputdir reports/staging/smoke/$(date +%Y%m%d_%H%M%S) --include smoke tests/

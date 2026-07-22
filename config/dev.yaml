@@ -13,11 +13,10 @@ browser:
 mobile:
   platform: android
   android:
-    platform_name: Android
-    automation_name: UiAutomator2
-    app: ${APP_APK_PATH}
-    app_package: com.indodax.android
-    app_activity: com.indodax.android.MainActivity
-    device_name: Pixel-6
-    no_reset: true
-    new_command_timeout: 300
+    platformName: Android
+    automationName: UiAutomator2
+    appPackage: id.co.bitcoin
+    appActivity: id.co.bitcoin.ui.main.SplashScreenActivity
+    deviceName: Pixel-7
+    noReset: true
+    newCommandTimeout: 300

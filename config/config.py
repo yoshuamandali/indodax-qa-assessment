@@ -24,3 +24,4 @@ BROWSER_TIMEOUT = CONFIG["browser"].get("timeout", 30)
 # ========= Mobile =========
 PLATFORM = CONFIG["mobile"]["platform"]
 MOBILE_CAPABILITIES = CONFIG["mobile"][PLATFORM]
+REMOTE_URL = CONFIG["mobile"].get("remote_url", "http://localhost:4723")
