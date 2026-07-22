@@ -25,29 +25,11 @@ source .venv/bin/activate        # macOS/Linux
 pip install -r requirements.txt
 ```
 
-### Run Tests
-
-```bash
-# API smoke (dev)
-ENV=dev robot --include smoke tests/api/
-
-# API regression (staging)
-ENV=staging robot --include regression tests/api/
-
-# Parallel API regression
-ENV=staging pabot --processes 4 --include regression tests/api/
-
-# Load test (Locust) — see "Load Testing" section below
-python3 -m load.runner.app        # Flask UI
-# or
-locust -f load/getAllEmployee.py --headless -u 10 -r 2 --run-time 150s
-```
-
 ### Configuration
 
 Env selected via `ENV` var (`dev` | `staging` | `prod`). Values in `config/{env}.yaml`.
 
-## Run Command Cheat Sheet
+## Run Command
 ```bash
 # Dev smoke
 ENV=dev robot --include smoke tests/api/
