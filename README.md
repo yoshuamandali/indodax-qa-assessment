@@ -51,7 +51,7 @@ ENV=staging robot --exclude non-critical tests/
 
 # UI Automation Web
 # Run suite
-ENV=dev robot --include smoke tests/mobile/web/smoke/
+ENV=dev robot --include smoke tests/web/smoke/
 
 # Mobile Android smoke (local)
 # 1. Start Appium server (separate terminal)
